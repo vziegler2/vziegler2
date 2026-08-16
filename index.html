@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Countdown · 26.05.2108</title>
+<meta name="theme-color" content="#0B1618">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="26.05.2108">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --abyss:#0B1618;
+    --panel:#122326;
+    --line:#24403F;
+    --patina:#7FB3A3;
+    --bone:#EDE7D8;
+    --brass:#D9A441;
+    --rust:#B4452E;
+
+    --display:"Big Shoulders Display","Oswald","Arial Narrow",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+
+  body{
+    background:var(--abyss);
+    color:var(--bone);
+    font-family:var(--mono);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex;
+    justify-content:center;
+    padding:clamp(1.25rem,4vw,3rem) clamp(1rem,4vw,3rem);
+    padding-bottom:calc(clamp(1.25rem,4vw,3rem) + env(safe-area-inset-bottom));
+    overflow-x:hidden;
+  }
+
+  /* soft instrument glow behind the readout */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:radial-gradient(60% 45% at 50% 38%, #1B3336 0%, transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  main{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:60rem;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(1.75rem,5vw,3.25rem);
+  }
+
+  .eyebrow{
+    font-size:.66rem;
+    font-weight:400;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--patina);
+  }
+
+  /* ── Kopf ─────────────────────────────── */
+  .head{display:flex;flex-direction:column;gap:.6rem}
+
+  .target{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(1.5rem,5.5vw,2.5rem);
+    letter-spacing:.03em;
+    line-height:1;
+  }
+  .target .dot{color:var(--patina);padding:0 .3em}
+
+  .rule{height:1px;background:var(--line);border:0}
+
+  /* ── Grosse Spanne ────────────────────── */
+  .span{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+  }
+  .unit{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.35rem;
+    padding-left:clamp(.6rem,2.5vw,1.4rem);
+    border-left:1px solid var(--line);
+  }
+  .unit:first-child{padding-left:0;border-left:0}
+
+  .num{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(3.4rem,16vw,8.5rem);
+    line-height:.8;
+    letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  .lab{
+    font-size:clamp(.6rem,1.9vw,.72rem);
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--patina);
+  }
+
+  /* ── Laufwerk ─────────────────────────── */
+  .clock{
+    display:flex;
+    align-items:flex-start;
+    gap:clamp(.15rem,1vw,.4rem);
+    color:var(--brass);
+  }
+  .cgroup{display:flex;flex-direction:column;align-items:center;gap:.45rem}
+  .cnum{
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:clamp(2rem,10vw,4rem);
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+  }
+  .csep{
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:clamp(2rem,10vw,4rem);
+    line-height:1;
+    opacity:.4;
+  }
+  .clab{
+    font-size:clamp(.55rem,1.7vw,.64rem);
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--patina);
+  }
+
+  /* ── Skala 2026 → 2108 (Signatur) ─────── */
+  .scale{display:flex;flex-direction:column;gap:.9rem}
+
+  .track{
+    position:relative;
+    height:3.25rem;
+    border-bottom:1px solid var(--line);
+  }
+  .tick{
+    position:absolute;
+    bottom:0;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    height:100%;
+    gap:.4rem;
+  }
+  .tick::after{
+    content:"";
+    width:1px;
+    height:.5rem;
+    background:var(--line);
+  }
+  .tick-label{
+    font-size:.6rem;
+    letter-spacing:.14em;
+    color:var(--patina);
+    opacity:.75;
+  }
+
+  .now{
+    position:absolute;
+    bottom:0;
+    left:0;
+    height:100%;
+    width:1px;
+    background:var(--rust);
+    transform:translateX(-.5px);
+    transition:left 1.4s cubic-bezier(.16,.84,.35,1);
+  }
+  .now.settled{transition:none}
+  .now::after{
+    content:"";
+    position:absolute;
+    bottom:-3px;
+    left:-2.5px;
+    width:6px;
+    height:6px;
+    background:var(--rust);
+    border-radius:50%;
+  }
+  .now-flag{
+    position:absolute;
+    top:-.15rem;
+    left:.5rem;
+    font-size:.6rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--rust);
+    white-space:nowrap;
+  }
+
+  .scale-ends{
+    display:flex;
+    justify-content:space-between;
+    font-size:.62rem;
+    letter-spacing:.2em;
+    color:var(--patina);
+  }
+
+  /* ── Fusszeile ────────────────────────── */
+  .meta{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));
+    gap:1.4rem clamp(1rem,4vw,2.5rem);
+    padding-top:clamp(1.25rem,4vw,2rem);
+    border-top:1px solid var(--line);
+  }
+  .field{display:flex;flex-direction:column;gap:.4rem}
+  .field dt{
+    font-size:.58rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--patina);
+  }
+  .field dd{
+    font-size:.9rem;
+    font-weight:400;
+    font-variant-numeric:tabular-nums;
+    color:var(--bone);
+  }
+
+  /* ── Auftritt ─────────────────────────── */
+  @keyframes rise{
+    from{opacity:0;transform:translateY(14px)}
+    to{opacity:1;transform:none}
+  }
+  .head,.span,.clock,.scale,.meta{animation:rise .8s cubic-bezier(.2,.7,.3,1) both}
+  .span{animation-delay:.08s}
+  .clock{animation-delay:.16s}
+  .scale{animation-delay:.24s}
+  .meta{animation-delay:.32s}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation-duration:.001s!important;
+      transition-duration:.001s!important;
+    }
+  }
+
+  @media (max-width:560px){
+    .tick.minor .tick-label{display:none}
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <header class="head">
+    <span class="eyebrow">Zielpunkt</span>
+    <h1 class="target">26. Mai 2108<span class="dot">·</span>22:08 Uhr MESZ</h1>
+  </header>
+
+  <hr class="rule">
+
+  <section class="span" role="timer" aria-live="off" aria-label="Verbleibende Zeit">
+    <div class="unit"><span class="num" id="y">––</span><span class="lab">Jahre</span></div>
+    <div class="unit"><span class="num" id="mo">––</span><span class="lab">Monate</span></div>
+    <div class="unit"><span class="num" id="d">––</span><span class="lab">Tage</span></div>
+  </section>
+
+  <section class="clock" aria-hidden="true">
+    <div class="cgroup"><span class="cnum" id="h">00</span><span class="clab">Std</span></div>
+    <span class="csep">:</span>
+    <div class="cgroup"><span class="cnum" id="mi">00</span><span class="clab">Min</span></div>
+    <span class="csep">:</span>
+    <div class="cgroup"><span class="cnum" id="s">00</span><span class="clab">Sek</span></div>
+  </section>
+
+  <section class="scale" aria-hidden="true">
+    <div class="track">
+      <div class="ticks" id="ticks"></div>
+      <div class="now" id="now"><span class="now-flag">jetzt</span></div>
+    </div>
+    <div class="scale-ends"><span>02.04.1992</span><span>26.05.2108</span></div>
+  </section>
+
+  <dl class="meta">
+    <div class="field"><dt>Verbleibende Tage</dt><dd id="totalDays">–</dd></div>
+    <div class="field"><dt>Verbleibende Sekunden</dt><dd id="totalSecs">–</dd></div>
+    <div class="field"><dt>Skala zurückgelegt</dt><dd><span id="pct">–</span> %</dd></div>
+    <div class="field"><dt>Zeitbezug</dt><dd id="tz">–</dd></div>
+  </dl>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ── Zielzeitpunkt: 26.05.2108, 22:08 Uhr MESZ (deutsche Sommerzeit = UTC+2).
+  //    Fest an UTC+2 verankert – unabhängig von der Zeitzone des Geräts und von
+  //    künftigen Sommerzeit-Regeln. Monat ist 0-basiert: 4 = Mai.
+  var OFFSET_MIN = 120;                       // MESZ = UTC+2
+
+  function atCest(y, mo, d, h, mi, s){        // MESZ-Wanduhrzeit -> Zeitstempel
+    return Date.UTC(y, mo, d, h, mi, s) - OFFSET_MIN * 60000;
+  }
+  function cestFields(ms){                    // Zeitstempel -> MESZ-Wanduhrzeit
+    var t = new Date(ms + OFFSET_MIN * 60000);
+    return { Y:t.getUTCFullYear(), M:t.getUTCMonth(), D:t.getUTCDate(),
+             H:t.getUTCHours(), I:t.getUTCMinutes(), S:t.getUTCSeconds() };
+  }
+
+  var TARGET_MS = atCest(2108, 4, 26, 22, 8, 0);
+  // Skalenanfang: 02.04.1992, 22:08 Uhr deutscher Zeit – damals galt bereits
+  // Sommerzeit (MESZ, UTC+2), derselbe Bezug wie beim Ziel.
+  var SCALE_MS  = atCest(1992, 3,  2, 22, 8, 0);
+
+  var el = function(id){ return document.getElementById(id); };
+  var y=el("y"), mo=el("mo"), d=el("d"), h=el("h"), mi=el("mi"), s=el("s");
+  var totalDays=el("totalDays"), totalSecs=el("totalSecs"), pct=el("pct");
+  var nowMark=el("now");
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var nf = new Intl.NumberFormat("de-DE");
+  var pf = new Intl.NumberFormat("de-DE",{minimumFractionDigits:4,maximumFractionDigits:4});
+
+  function pad(n){ return n < 10 ? "0" + n : String(n); }
+
+  // Kalendergenaue Differenz mit Übertrag von Sekunde bis Jahr.
+  // Beide Seiten in MESZ-Feldern -> kein Sommerzeit-Sprung in der Rechnung.
+  function breakdown(from, to){
+    var Y = to.Y - from.Y;
+    var M = to.M - from.M;
+    var D = to.D - from.D;
+    var H = to.H - from.H;
+    var I = to.I - from.I;
+    var S = to.S - from.S;
+
+    if (S < 0) { S += 60; I--; }
+    if (I < 0) { I += 60; H--; }
+    if (H < 0) { H += 24; D--; }
+    if (D < 0) { D += new Date(Date.UTC(to.Y, to.M, 0)).getUTCDate(); M--; }
+    if (M < 0) { M += 12; Y--; }
+
+    return { Y:Y, M:M, D:D, H:H, I:I, S:S };
+  }
+
+  // Dekaden-Ticks aus echten Zeitstempeln setzen
+  (function buildTicks(){
+    var frag = document.createDocumentFragment();
+    var total = TARGET_MS - SCALE_MS;
+    var i = 0;
+    for (var year = 2000; year <= 2100; year += 10, i++){
+      var pos = (atCest(year, 0, 1, 0, 0, 0) - SCALE_MS) / total * 100;
+      var t = document.createElement("div");
+      t.className = "tick" + (i % 2 === 0 ? " minor" : "");
+      t.style.left = pos + "%";
+      var lab = document.createElement("span");
+      lab.className = "tick-label";
+      lab.textContent = year;
+      t.appendChild(lab);
+      frag.appendChild(t);
+    }
+    el("ticks").appendChild(frag);
+  })();
+
+  el("tz").textContent = "MESZ · UTC+2";
+
+  var TARGET_F = cestFields(TARGET_MS);
+  var lastMinute = null;
+
+  function render(){
+    var nowMs = Date.now();
+    var deltaMs = TARGET_MS - nowMs;
+
+    if (deltaMs <= 0){
+      y.textContent = mo.textContent = d.textContent = "0";
+      h.textContent = mi.textContent = s.textContent = "00";
+      totalDays.textContent = "0";
+      totalSecs.textContent = "0";
+      pct.textContent = pf.format(100);
+      nowMark.style.left = "100%";
+      document.title = "Erreicht · 26.05.2108";
+      return true; // fertig
+    }
+
+    var b = breakdown(cestFields(nowMs), TARGET_F);
+
+    if (y.textContent  !== String(b.Y)) y.textContent  = b.Y;
+    if (mo.textContent !== String(b.M)) mo.textContent = b.M;
+    if (d.textContent  !== String(b.D)) d.textContent  = b.D;
+
+    h.textContent  = pad(b.H);
+    mi.textContent = pad(b.I);
+    s.textContent  = pad(b.S);
+
+    if (!reduce && s.animate){
+      s.animate([{opacity:.4},{opacity:1}], {duration:420, easing:"ease-out"});
+    }
+
+    var secsLeft = Math.floor(deltaMs / 1000);
+    totalSecs.textContent = nf.format(secsLeft);
+
+    var daysTxt = nf.format(Math.floor(secsLeft / 86400));
+    if (totalDays.textContent !== daysTxt) totalDays.textContent = daysTxt;
+
+    // Skala und Prozentwert bewegen sich auf 116 Jahren so langsam, dass eine
+    // Aktualisierung pro Minute weit jenseits der Sichtbarkeitsgrenze liegt
+    // (rund 1 Pixel je 100 Tage). Sekündliches Setzen von "left" hat nur die
+    // 1,4s-Transition endlos neu gestartet und Layout + Paint erzwungen.
+    var minuteKey = Math.floor(nowMs / 60000);
+    if (minuteKey !== lastMinute){
+      lastMinute = minuteKey;
+      var travelled = (nowMs - SCALE_MS) / (TARGET_MS - SCALE_MS) * 100;
+      pct.textContent = pf.format(travelled);
+      nowMark.style.left = travelled + "%";
+    }
+
+    document.title = b.Y + "J " + b.M + "M " + b.D + "T · 26.05.2108";
+    return false;
+  }
+
+  // Selbstkorrigierender Takt: springt immer auf die nächste volle Sekunde
+  function loop(){
+    var done = render();
+    if (done) return;
+    var delay = 1000 - (Date.now() % 1000);
+    setTimeout(loop, delay + 8);
+  }
+
+  loop();
+
+  // Die Transition dient nur dem Einlaufen der Markierung beim Laden.
+  // Danach abschalten, damit spätere Minutenschritte nichts mehr animieren.
+  if (reduce) {
+    nowMark.classList.add("settled");
+  } else {
+    setTimeout(function(){ nowMark.classList.add("settled"); }, 1600);
+  }
+
+  // Nach Sperrbildschirm / Tabwechsel sofort nachziehen
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) render();
+  });
+})();
+</script>
+</body>
+</html>
